@@ -1,0 +1,3 @@
+[submodule "include/Waterfront"]
+	path = include/Waterfront
+	url = https://github.com/Waterfront-NET/Waterfront.git
