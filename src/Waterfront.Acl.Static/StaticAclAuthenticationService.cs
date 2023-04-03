@@ -20,24 +20,30 @@ public class StaticAclAuthenticationService : IAclAuthenticationService
         IOptions<StaticAclOptions> options
     )
     {
-        _logger = logger;
+        _logger  = logger;
         _options = options;
     }
 
-    public Task<TokenRequestAuthenticationResult> AuthenticateAsync(TokenRequest request)
+    public ValueTask<TokenRequestAuthenticationResult> AuthenticateAsync(TokenRequest request)
     {
         _logger.LogDebug("Authorizing token request: {RequestId}", request.Id);
 
-        if (TryAuthenticateWithBasicCredentials(request, out var result1))
+        if (TryAuthenticateWithBasicCredentials(
+                request,
+                out TokenRequestAuthenticationResult result1
+            ))
         {
             _logger.LogDebug("Basic credentials matched");
-            return Task.FromResult(result1);
+            return ValueTask.FromResult(result1);
         }
 
-        if (TryAuthenticateWithConnectionCredentials(request, out var result2))
+        if (TryAuthenticateWithConnectionCredentials(
+                request,
+                out TokenRequestAuthenticationResult result2
+            ))
         {
             _logger.LogDebug("Connection credentials matched");
-            return Task.FromResult(result2);
+            return ValueTask.FromResult(result2);
         }
 
         var result3 = TryAuthenticateWithFallbackPolicy();
@@ -45,12 +51,12 @@ public class StaticAclAuthenticationService : IAclAuthenticationService
         if (result3.IsSuccessful)
         {
             _logger.LogDebug("Found anonymous user");
-            return Task.FromResult(result3);
+            return ValueTask.FromResult(result3);
         }
-        
+
         _logger.LogDebug("Auth failed");
 
-        return Task.FromResult(TokenRequestAuthenticationResult.Failed);
+        return ValueTask.FromResult(TokenRequestAuthenticationResult.Failed);
     }
 
     private bool TryAuthenticateWithConnectionCredentials(
@@ -58,9 +64,9 @@ public class StaticAclAuthenticationService : IAclAuthenticationService
         out TokenRequestAuthenticationResult result
     )
     {
-        var matchTarget = request.ConnectionCredentials.ToString();
+        string matchTarget = request.ConnectionCredentials.ToString();
 
-        var user = _options.Value.Users.FirstOrDefault(
+        StaticAclUser? user = _options.Value.Users.FirstOrDefault(
             user => !string.IsNullOrEmpty(user.Ip) && user.Ip.ToGlob().IsMatch(matchTarget)
         );
 
@@ -73,10 +79,7 @@ public class StaticAclAuthenticationService : IAclAuthenticationService
         out TokenRequestAuthenticationResult result
     )
     {
-        if (
-            request.BasicCredentials == null ||
-            request.BasicCredentials == BasicCredentials.Empty
-        )
+        if (request.BasicCredentials == null || request.BasicCredentials == BasicCredentials.Empty)
         {
             result = TokenRequestAuthenticationResult.Failed;
             return false;
@@ -117,7 +120,7 @@ public class StaticAclAuthenticationService : IAclAuthenticationService
     TokenRequestAuthenticationResult TryAuthenticateWithFallbackPolicy()
     {
         StaticAclUser? anonUser = _options.Value.Users.FirstOrDefault(
-            user => string.IsNullOrEmpty(user.Password) &&
+            user => string.IsNullOrEmpty(user.Password)          &&
                     string.IsNullOrEmpty(user.PlainTextPassword) &&
                     string.IsNullOrEmpty(user.Ip)
         );
