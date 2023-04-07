@@ -4,5 +4,3 @@
 bin/
 obj/
 TestResults/
-
-*.DotSettings.user
