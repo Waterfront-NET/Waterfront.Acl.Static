@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Waterfront.Acl.Static.Models;
-using Waterfront.Acl.Static.Options;
 using Waterfront.Common.Acl;
 using Waterfront.Common.Authentication;
 using Waterfront.Common.Authorization;
@@ -44,15 +43,15 @@ public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOp
             );
         }
 
-        var user = authnResult.User;
+        AclUser? user = authnResult.User;
 
         List<TokenRequestScope> authorizedScopes = new List<TokenRequestScope>();
         List<TokenRequestScope> forbiddenScopes  = new List<TokenRequestScope>();
 
-        var policies = Options.Value.Acl.Where(
-                                  p => user.Acl.Contains(p.Name, StringComparer.OrdinalIgnoreCase)
-                              )
-                              .ToArray();
+        StaticAclPolicy[] policies = Options.Value.Acl.Where(
+                                                p => user.Acl.Contains(p.Name, StringComparer.OrdinalIgnoreCase)
+                                            )
+                                            .ToArray();
 
         foreach ( TokenRequestScope scope in request.Scopes )
         {
@@ -81,10 +80,10 @@ public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOp
     {
         Logger.LogDebug("Trying to authorize scope {@Scope} with policy {@Policy}", scope, policy);
 
-        var matchingByType =
+        IEnumerable<StaticAclPolicyAccessRule> matchingByType =
         policy.Access.Where(rule => rule.Type.Equals(scope.Type.ToSerialized()));
-        var matchingByname  = matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
-        var matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
+        IEnumerable<StaticAclPolicyAccessRule> matchingByname  = matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
+        bool           matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
 
         Logger.LogDebug("MatchingByType: {@MatchingByType}", matchingByType);
         Logger.LogDebug("MatchingByName: {@MatchingByName}", matchingByname);

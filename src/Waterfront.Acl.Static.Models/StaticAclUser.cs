@@ -12,14 +12,6 @@ public class StaticAclUser
     public string? Password { get; set; }
     public string[] Acl { get; set; }
 
-    public AclUser ToAclUser()
-    {
-        return new AclUser {
-            Username = Username,
-            Acl = Acl
-        };
-    }
-
     public override string ToString()
     {
         return $"StaticACLUser({Username})";

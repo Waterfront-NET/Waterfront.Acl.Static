@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Waterfront.Acl.Static.Extensions;
 using Waterfront.Acl.Static.Models;
-using Waterfront.Acl.Static.Options;
 using Waterfront.Common.Authentication;
 using Waterfront.Common.Authentication.Credentials;
 using Waterfront.Common.Tokens;
@@ -24,7 +24,6 @@ public class StaticAclAuthenticationService : AclAuthenticationService<StaticAcl
         TokenRequest request
     )
     {
-        // FUck you
         Logger.LogDebug("Authorizing token request: {RequestId}", request.Id);
 
         if (TryAuthenticateWithBasicCredentials(
@@ -45,7 +44,7 @@ public class StaticAclAuthenticationService : AclAuthenticationService<StaticAcl
             return ValueTask.FromResult(result2);
         }
 
-        var result3 = TryAuthenticateWithFallbackPolicy();
+        AclAuthenticationResult result3 = TryAuthenticateWithFallbackPolicy();
 
         if (result3.IsSuccessful)
         {

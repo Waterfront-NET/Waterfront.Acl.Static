@@ -4,10 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\Waterfront.Common\Waterfront.Common.csproj"/>
-        <ProjectReference Include="..\Waterfront.Core\Waterfront.Core.csproj"/>
+        <PackageReference Include="Waterfront.Common" Version="1.0.0-alpha.2" />
     </ItemGroup>
 </Project>
