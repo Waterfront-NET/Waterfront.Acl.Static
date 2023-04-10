@@ -4,14 +4,14 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>1.0.0-alpha.1</Version>
+        <Version>1.0.0-alpha.4</Version>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Waterfront.Acl.Static.Models\Waterfront.Acl.Static.Models.csproj" />
+        <ProjectReference Include="..\Waterfront.Acl.Static.Models\Waterfront.Acl.Static.Models.csproj"/>
     </ItemGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
@@ -20,5 +20,10 @@
         <PackageReference Include="Waterfront.Common" Version="1.0.0-alpha.4" />
         <PackageReference Include="Waterfront.Core" Version="1.0.0-alpha.4" />
     </ItemGroup>
+
+    <Target Name="Push package" AfterTargets="Pack">
+        <Exec Command="dotnet nuget push $(MSBuildThisFileDirectory)bin\Release\Waterfront.Acl.Static.$(Version).nupkg -s C:\Users\2CHEVSKII\.nuget\packages"/>
+    </Target>
+    
 
 </Project>
