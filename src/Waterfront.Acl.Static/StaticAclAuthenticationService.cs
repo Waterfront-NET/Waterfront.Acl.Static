@@ -5,15 +5,13 @@ using Microsoft.Extensions.Options;
 using Waterfront.Acl.Static.Extensions;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Authentication;
-using Waterfront.Common.Authentication.Credentials;
 using Waterfront.Common.Tokens;
-using Waterfront.Core;
 using Waterfront.Core.Authentication;
-using Waterfront.Core.Utility.Matching;
+using Waterfront.Core.Extensions.Globbing;
 
 namespace Waterfront.Acl.Static;
 
-public class StaticAclAuthenticationService : AclAuthenticationService<StaticAclOptions>
+public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclOptions>
 {
     public StaticAclAuthenticationService(
         ILoggerFactory loggerFactory,
@@ -77,7 +75,7 @@ public class StaticAclAuthenticationService : AclAuthenticationService<StaticAcl
         out AclAuthenticationResult result
     )
     {
-        if (request.BasicCredentials == null || request.BasicCredentials == BasicCredentials.Empty)
+        if (request.BasicCredentials.IsEmpty)
         {
             result = AclAuthenticationResult.Failed;
             return false;

@@ -9,14 +9,13 @@ using Waterfront.Common.Acl;
 using Waterfront.Common.Authentication;
 using Waterfront.Common.Authorization;
 using Waterfront.Common.Tokens;
-using Waterfront.Core;
 using Waterfront.Core.Authorization;
-using Waterfront.Core.Utility.Matching;
+using Waterfront.Core.Extensions.Globbing;
 using Waterfront.Core.Utility.Serialization.Acl;
 
 namespace Waterfront.Acl.Static;
 
-public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOptions>
+public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclOptions>
 {
     public StaticAclAuthorizationService(
         ILoggerFactory loggerFactory,
@@ -49,7 +48,10 @@ public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOp
         List<TokenRequestScope> forbiddenScopes  = new List<TokenRequestScope>();
 
         StaticAclPolicy[] policies = Options.Value.Acl.Where(
-                                                p => user.Acl.Contains(p.Name, StringComparer.OrdinalIgnoreCase)
+                                                p => user.Acl.Contains(
+                                                    p.Name,
+                                                    StringComparer.OrdinalIgnoreCase
+                                                )
                                             )
                                             .ToArray();
 
@@ -82,8 +84,9 @@ public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOp
 
         IEnumerable<StaticAclPolicyAccessRule> matchingByType =
         policy.Access.Where(rule => rule.Type.Equals(scope.Type.ToSerialized()));
-        IEnumerable<StaticAclPolicyAccessRule> matchingByname  = matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
-        bool           matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
+        IEnumerable<StaticAclPolicyAccessRule> matchingByname =
+        matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
+        bool matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
 
         Logger.LogDebug("MatchingByType: {@MatchingByType}", matchingByType);
         Logger.LogDebug("MatchingByName: {@MatchingByName}", matchingByname);
@@ -105,7 +108,7 @@ public class StaticAclAuthorizationService : AclAuthorizationService<StaticAclOp
             return true;
         }
 
-        bool containsAllRequired = scope.Actions.Select(AclEntitySerializer.ToSerialized)
+        bool containsAllRequired = scope.Actions.Select(s => s.ToSerialized())
                                         .All(rule.Actions.Contains);
 
         Logger.LogInformation("ContainsAllRequired: {ContainsAllRequired}", containsAllRequired);

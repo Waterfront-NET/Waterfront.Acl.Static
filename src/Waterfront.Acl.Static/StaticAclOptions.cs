@@ -1,4 +1,5 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 using Waterfront.Acl.Static.Models;
 
 namespace Waterfront.Acl.Static;

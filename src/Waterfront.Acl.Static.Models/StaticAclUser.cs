@@ -1,8 +1,4 @@
-﻿using Waterfront.Common.Acl;
-
-namespace Waterfront.Acl.Static.Models;
-
-#pragma warning disable CS8618
+﻿namespace Waterfront.Acl.Static.Models;
 
 public class StaticAclUser
 {
