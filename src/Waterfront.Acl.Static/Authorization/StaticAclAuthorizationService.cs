@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Waterfront.Acl.Static.Configuration;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Acl;
 using Waterfront.Common.Authentication;
@@ -13,7 +14,7 @@ using Waterfront.Core.Authorization;
 using Waterfront.Core.Extensions.Globbing;
 using Waterfront.Core.Utility.Serialization.Acl;
 
-namespace Waterfront.Acl.Static;
+namespace Waterfront.Acl.Static.Authorization;
 
 public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclOptions>
 {

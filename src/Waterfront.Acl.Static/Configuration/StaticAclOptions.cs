@@ -2,7 +2,7 @@
 
 using Waterfront.Acl.Static.Models;
 
-namespace Waterfront.Acl.Static;
+namespace Waterfront.Acl.Static.Configuration;
 
 #pragma warning disable CS8618
 

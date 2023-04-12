@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Waterfront.Acl.Static.Configuration;
 using Waterfront.Acl.Static.Extensions;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Authentication;
@@ -9,7 +10,7 @@ using Waterfront.Common.Tokens;
 using Waterfront.Core.Authentication;
 using Waterfront.Core.Extensions.Globbing;
 
-namespace Waterfront.Acl.Static;
+namespace Waterfront.Acl.Static.Authentication;
 
 public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclOptions>
 {
