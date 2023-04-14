@@ -10,6 +10,6 @@ public class StaticAclUser
 
     public override string ToString()
     {
-        return $"StaticACLUser({Username})";
+        return $"StaticAclUser({Username})";
     }
 }

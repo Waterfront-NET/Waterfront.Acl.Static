@@ -8,6 +8,6 @@ public class StaticAclPolicyAccessRule
 
     public override string ToString()
     {
-        return $"StaticACLPolicyAccessRule({Type}:{Name}:{string.Join(",", Actions)})";
+        return $"StaticAclPolicyAccessRule({Type}:{Name}:{string.Join(",", Actions)})";
     }
 }

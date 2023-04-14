@@ -16,11 +16,11 @@ using Waterfront.Core.Utility.Serialization.Acl;
 
 namespace Waterfront.Acl.Static.Authorization;
 
-public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclOptions>
+public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclAuthorizationOptions>
 {
     public StaticAclAuthorizationService(
         ILoggerFactory loggerFactory,
-        IOptions<StaticAclOptions> options
+        IOptions<StaticAclAuthorizationOptions> options
     ) : base(loggerFactory, options) { }
 
     public override ValueTask<AclAuthorizationResult> AuthorizeAsync(

@@ -12,11 +12,11 @@ using Waterfront.Core.Extensions.Globbing;
 
 namespace Waterfront.Acl.Static.Authentication;
 
-public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclOptions>
+public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclAuthenticationOptions>
 {
     public StaticAclAuthenticationService(
         ILoggerFactory loggerFactory,
-        IOptions<StaticAclOptions> options
+        IOptions<StaticAclAuthenticationOptions> options
     ) : base(loggerFactory, options) { }
 
     public override ValueTask<AclAuthenticationResult> AuthenticateAsync(

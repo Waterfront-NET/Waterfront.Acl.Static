@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Acl;
 using Waterfront.Core.Utility.Parsing.Acl;

@@ -7,6 +7,6 @@ public class StaticAclPolicy
     
     public override string ToString()
     {
-        return $"StaticACLPolicy({Name})";
+        return $"StaticAclPolicy({Name})";
     }
 }
