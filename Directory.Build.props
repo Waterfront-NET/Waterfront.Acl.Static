@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Company></Company>
+    <Authors>2CHEVSKII</Authors>
+    <Copyright>Copyright (c) 2023 2CHEVSKII, MIT License</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Waterfront-NET/Waterfront.Acl.Static</RepositoryUrl>
+    <Description>Static ACL providers for Waterfront</Description>
+    <PackageTags>authentication;authorization;docker;registry;tokens;yaml</PackageTags>
+  </PropertyGroup>
+</Project>
