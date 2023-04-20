@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C2ED456F-7CA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waterfront.Acl.Static", "src\Waterfront.Acl.Static\Waterfront.Acl.Static.csproj", "{2D858FCE-3B0E-453A-A5AC-8ED9383E4D53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waterfront.Acl.Static.Extensions.DependencyInjection", "src\Waterfront.Acl.Static.Extensions.DependencyInjection\Waterfront.Acl.Static.Extensions.DependencyInjection.csproj", "{4213E088-B7C2-4CF9-BC5A-4A29696F800C}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,8 +34,21 @@ Global
 		{2D858FCE-3B0E-453A-A5AC-8ED9383E4D53}.Release|x64.Build.0 = Release|Any CPU
 		{2D858FCE-3B0E-453A-A5AC-8ED9383E4D53}.Release|x86.ActiveCfg = Release|Any CPU
 		{2D858FCE-3B0E-453A-A5AC-8ED9383E4D53}.Release|x86.Build.0 = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|x64.Build.0 = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Debug|x86.Build.0 = Debug|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|x64.ActiveCfg = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|x64.Build.0 = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|x86.ActiveCfg = Release|Any CPU
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2D858FCE-3B0E-453A-A5AC-8ED9383E4D53} = {C2ED456F-7CAD-4B6D-8237-1167AF6C5A77}
+		{4213E088-B7C2-4CF9-BC5A-4A29696F800C} = {C2ED456F-7CAD-4B6D-8237-1167AF6C5A77}
 	EndGlobalSection
 EndGlobal

@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Waterfront.Acl.Static.Configuration;
+using Waterfront.Acl.Static.Extensions;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Acl;
 using Waterfront.Common.Authentication;
 using Waterfront.Common.Authorization;
-using Waterfront.Common.Tokens;
+using Waterfront.Common.Tokens.Requests;
 using Waterfront.Core.Authorization;
-using Waterfront.Core.Extensions.Globbing;
-using Waterfront.Core.Utility.Serialization.Acl;
+using Waterfront.Core.Serialization.Acl;
 
 namespace Waterfront.Acl.Static.Authorization;
 
-public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclAuthorizationOptions>
+public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclOptions>
 {
-    public StaticAclAuthorizationService(
-        ILoggerFactory loggerFactory,
-        IOptions<StaticAclAuthorizationOptions> options
-    ) : base(loggerFactory, options) { }
+    public StaticAclAuthorizationService(ILoggerFactory loggerFactory, IOptions<StaticAclOptions> options) : base(
+        loggerFactory,
+        options
+    ) {}
 
     public override ValueTask<AclAuthorizationResult> AuthorizeAsync(
         TokenRequest request,
@@ -32,35 +28,30 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
         Logger.LogTrace("AuthorizeAsync({RequestId})", request.Id);
         Logger.LogTrace("Authentication result: {@AuthenticationResult}", authnResult);
 
-        if ( !authnResult.IsSuccessful )
+        if (!authnResult.IsSuccessful)
         {
             Logger.LogError(
                 "Cannot authorize request {RequestId}: Authentication result was not successful",
                 request.Id
             );
-            return ValueTask.FromResult(
-                new AclAuthorizationResult { ForbiddenScopes = request.Scopes }
-            );
+            return ValueTask.FromResult(new AclAuthorizationResult {ForbiddenScopes = request.Scopes});
         }
 
         AclUser? user = authnResult.User;
 
         List<TokenRequestScope> authorizedScopes = new List<TokenRequestScope>();
-        List<TokenRequestScope> forbiddenScopes  = new List<TokenRequestScope>();
+        List<TokenRequestScope> forbiddenScopes = new List<TokenRequestScope>();
 
         StaticAclPolicy[] policies = Options.Value.Acl.Where(
-                                                p => user.Acl.Contains(
-                                                    p.Name,
-                                                    StringComparer.OrdinalIgnoreCase
-                                                )
+                                                p => user.Acl.Contains(p.Name, StringComparer.OrdinalIgnoreCase)
                                             )
                                             .ToArray();
 
-        foreach ( TokenRequestScope scope in request.Scopes )
+        foreach (TokenRequestScope scope in request.Scopes)
         {
-            foreach ( StaticAclPolicy policy in policies )
+            foreach (StaticAclPolicy policy in policies)
             {
-                if ( TryAuthorize(scope, policy) )
+                if (TryAuthorize(scope, policy))
                 {
                     authorizedScopes.Add(scope);
                 }
@@ -74,7 +65,7 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
         return ValueTask.FromResult(
             new AclAuthorizationResult {
                 AuthorizedScopes = authorizedScopes,
-                ForbiddenScopes  = forbiddenScopes
+                ForbiddenScopes = forbiddenScopes
             }
         );
     }
@@ -84,9 +75,9 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
         Logger.LogDebug("Trying to authorize scope {@Scope} with policy {@Policy}", scope, policy);
 
         IEnumerable<StaticAclPolicyAccessRule> matchingByType =
-        policy.Access.Where(rule => rule.Type.Equals(scope.Type.ToSerialized()));
+            policy.Access.Where(rule => rule.Type.Equals(scope.Type.ToSerialized()));
         IEnumerable<StaticAclPolicyAccessRule> matchingByname =
-        matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
+            matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
         bool matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
 
         Logger.LogDebug("MatchingByType: {@MatchingByType}", matchingByType);
@@ -104,13 +95,12 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
 
         Logger.LogInformation("ContainsAny: {ContainsAny}", containsAny);
 
-        if ( containsAny )
+        if (containsAny)
         {
             return true;
         }
 
-        bool containsAllRequired = scope.Actions.Select(s => s.ToSerialized())
-                                        .All(rule.Actions.Contains);
+        bool containsAllRequired = scope.Actions.Select(s => s.ToSerialized()).All(rule.Actions.Contains);
 
         Logger.LogInformation("ContainsAllRequired: {ContainsAllRequired}", containsAllRequired);
 

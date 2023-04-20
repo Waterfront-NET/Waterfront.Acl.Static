@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using Waterfront.Acl.Static.Models;
+﻿using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Acl;
-using Waterfront.Core.Utility.Parsing.Acl;
+using Waterfront.Core.Parsing.Acl;
 
 namespace Waterfront.Acl.Static.Extensions;
 
-public static class StaticAclPolicyAccessRuleExtensions
+public static class StaticAclConversionExtensions
 {
     public static AclAccessRule ToAclAccessRule(this StaticAclPolicyAccessRule self) =>
     new AclAccessRule {

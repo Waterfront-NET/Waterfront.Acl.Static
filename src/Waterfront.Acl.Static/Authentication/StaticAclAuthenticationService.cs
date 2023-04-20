@@ -1,65 +1,53 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Waterfront.Acl.Static.Configuration;
 using Waterfront.Acl.Static.Extensions;
 using Waterfront.Acl.Static.Models;
 using Waterfront.Common.Authentication;
-using Waterfront.Common.Tokens;
+using Waterfront.Common.Tokens.Requests;
 using Waterfront.Core.Authentication;
-using Waterfront.Core.Extensions.Globbing;
 
 namespace Waterfront.Acl.Static.Authentication;
 
-public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclAuthenticationOptions>
+public class StaticAclAuthenticationService : AclAuthenticationServiceBase<StaticAclOptions>
 {
-    public StaticAclAuthenticationService(
-        ILoggerFactory loggerFactory,
-        IOptions<StaticAclAuthenticationOptions> options
-    ) : base(loggerFactory, options) { }
+    public StaticAclAuthenticationService(ILoggerFactory loggerFactory, IOptions<StaticAclOptions> options) : base(
+        loggerFactory,
+        options
+    ) {}
 
-    public override ValueTask<AclAuthenticationResult> AuthenticateAsync(
-        TokenRequest request
-    )
+    public override ValueTask<AclAuthenticationResult> AuthenticateAsync(TokenRequest request)
     {
         Logger.LogDebug("Authorizing token request: {RequestId}", request.Id);
 
-        if (TryAuthenticateWithBasicCredentials(
-                request,
-                out AclAuthenticationResult result1
-            ))
+        AclAuthenticationResult result = new AclAuthenticationResult {};
+
+        if (TryAuthenticateWithBasicCredentials(request, out result))
         {
             Logger.LogDebug("Basic credentials matched");
-            return ValueTask.FromResult(result1);
         }
-
-        if (TryAuthenticateWithConnectionCredentials(
-                request,
-                out AclAuthenticationResult result2
-            ))
+        else if (TryAuthenticateWithConnectionCredentials(request, out result))
         {
             Logger.LogDebug("Connection credentials matched");
-            return ValueTask.FromResult(result2);
         }
-
-        AclAuthenticationResult result3 = TryAuthenticateWithFallbackPolicy();
-
-        if (result3.IsSuccessful)
+        else
         {
-            Logger.LogDebug("Found anonymous user");
-            return ValueTask.FromResult(result3);
+            result = TryAuthenticateWithFallbackPolicy();
+
+            if (result.IsSuccessful)
+            {
+                Logger.LogDebug("Found anonymous user");
+            }
+            else
+            {
+                Logger.LogDebug("Auth failed");
+            }
         }
 
-        Logger.LogDebug("Auth failed");
-
-        return ValueTask.FromResult(AclAuthenticationResult.Failed);
+        return ValueTask.FromResult(result);
     }
 
-    private bool TryAuthenticateWithConnectionCredentials(
-        TokenRequest request,
-        out AclAuthenticationResult result
-    )
+    private bool TryAuthenticateWithConnectionCredentials(TokenRequest request, out AclAuthenticationResult result)
     {
         string matchTarget = request.ConnectionCredentials.ToString();
 
@@ -67,18 +55,15 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
             user => !string.IsNullOrEmpty(user.Ip) && user.Ip.ToGlob().IsMatch(matchTarget)
         );
 
-        result = new AclAuthenticationResult { User = user?.ToAclUser() };
+        result = new AclAuthenticationResult {User = user?.ToAclUser()};
         return result.IsSuccessful;
     }
 
-    private bool TryAuthenticateWithBasicCredentials(
-        TokenRequest request,
-        out AclAuthenticationResult result
-    )
+    private bool TryAuthenticateWithBasicCredentials(TokenRequest request, out AclAuthenticationResult result)
     {
-        if (request.BasicCredentials.IsEmpty)
+        if (!request.BasicCredentials.HasValue)
         {
-            result = AclAuthenticationResult.Failed;
+            result = new AclAuthenticationResult {};
             return false;
         }
 
@@ -88,7 +73,7 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
 
         if (user == null)
         {
-            result = AclAuthenticationResult.Failed;
+            result = new AclAuthenticationResult {};
 
             return false;
         }
@@ -98,18 +83,18 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
             // This nesting is on purpose
             if (BCrypt.Net.BCrypt.Verify(request.BasicCredentials.Password, user.Password))
             {
-                result = new AclAuthenticationResult { User = user.ToAclUser() };
+                result = new AclAuthenticationResult {User = user.ToAclUser()};
                 return true;
             }
         }
         else if (!string.IsNullOrEmpty(user.PlainTextPassword) &&
                  user.PlainTextPassword.Equals(request.BasicCredentials.Password))
         {
-            result = new AclAuthenticationResult { User = user.ToAclUser() };
+            result = new AclAuthenticationResult {User = user.ToAclUser()};
             return true;
         }
 
-        result = AclAuthenticationResult.Failed;
+        result = new AclAuthenticationResult {};
 
         return false;
     }
@@ -117,11 +102,11 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
     AclAuthenticationResult TryAuthenticateWithFallbackPolicy()
     {
         StaticAclUser? anonUser = Options.Value.Users.FirstOrDefault(
-            user => string.IsNullOrEmpty(user.Password)          &&
+            user => string.IsNullOrEmpty(user.Password) &&
                     string.IsNullOrEmpty(user.PlainTextPassword) &&
                     string.IsNullOrEmpty(user.Ip)
         );
 
-        return new AclAuthenticationResult { User = anonUser?.ToAclUser() };
+        return new AclAuthenticationResult {User = anonUser?.ToAclUser()};
     }
 }
