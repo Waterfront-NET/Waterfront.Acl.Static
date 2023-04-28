@@ -9,6 +9,12 @@ foreach(var project in projects) {
       NoDependencies = true,
       Configuration = args.Configuration
     });
+
+    if(args.Configuration is "Release" && !args.NoCopyArtifacts && !project.IsTest) {
+      var source = project.Directory.Combine("bin/Release/net6.0");
+      var archiveName = $"{project.Name}.{version.SemVer}.zip";
+      Zip(source, paths.Libraries.CombineWithFilePath(archiveName));
+    }
   }).WithCriteria(!args.NoBuild)
   .IsDependentOn(project.TaskName("restore"));
 

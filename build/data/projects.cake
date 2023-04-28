@@ -31,6 +31,7 @@ class BuildProject {
   public FilePath Path { get; init; }
   public bool IsTest => Path.GetFilenameWithoutExtension().ToString().EndsWith(".Tests");
   public List<BuildProject> Dependencies { get; init; }
+  public DirectoryPath Directory => Path.GetDirectory();
 
   public string TaskName(string task) => $":{ShortName}:{task}";
 }
