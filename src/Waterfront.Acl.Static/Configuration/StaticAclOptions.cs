@@ -19,14 +19,21 @@ public class StaticAclOptions
 
     public void Validate()
     {
+        List<ValidationException> exceptions = new List<ValidationException>(2);
+
         if (Users.Any(user => string.IsNullOrEmpty(user.Username)))
         {
-            throw new ValidationException("All users should have username defined");
+            exceptions.Add(new ValidationException("All users should have username defined"));
         }
 
         if (Acl.Any(acl => string.IsNullOrEmpty(acl.Name)))
         {
-            throw new ValidationException("All Acl policies should have name defined");
+            exceptions.Add(new ValidationException("All Acl policies should have name defined"));
+        }
+
+        if ( exceptions.Any() )
+        {
+            throw new AggregateException(exceptions);
         }
     }
 }
