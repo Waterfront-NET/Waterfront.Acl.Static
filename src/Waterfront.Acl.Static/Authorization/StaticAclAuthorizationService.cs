@@ -74,9 +74,9 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
     {
         Logger.LogDebug("Trying to authorize scope {@Scope} with policy {@Policy}", scope, policy);
 
-        IEnumerable<StaticAclPolicyAccessRule> matchingByType =
+        IEnumerable<StaticAclAccessRule> matchingByType =
             policy.Access.Where(rule => rule.Type.Equals(scope.Type.ToSerialized()));
-        IEnumerable<StaticAclPolicyAccessRule> matchingByname =
+        IEnumerable<StaticAclAccessRule> matchingByname =
             matchingByType.Where(rule => rule.Name.ToGlob().IsMatch(scope.Name));
         bool matchingByCheck = matchingByname.Any(rule => CheckRequiredActions(rule, scope));
 
@@ -87,7 +87,7 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
         return matchingByCheck;
     }
 
-    private bool CheckRequiredActions(StaticAclPolicyAccessRule rule, TokenRequestScope scope)
+    private bool CheckRequiredActions(StaticAclAccessRule rule, TokenRequestScope scope)
     {
         Logger.LogInformation("CheckRequiredActions({@Rule}, {@Scope})", rule, scope);
 

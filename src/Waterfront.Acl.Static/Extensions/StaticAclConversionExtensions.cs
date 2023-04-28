@@ -1,4 +1,5 @@
 ﻿using Waterfront.Acl.Static.Models;
+using Waterfront.Acl.Static.Models.Converters;
 using Waterfront.Common.Acl;
 using Waterfront.Core.Parsing.Acl;
 
@@ -6,20 +7,21 @@ namespace Waterfront.Acl.Static.Extensions;
 
 public static class StaticAclConversionExtensions
 {
-    public static AclAccessRule ToAclAccessRule(this StaticAclPolicyAccessRule self) =>
-    new AclAccessRule {
-        Type    = AclEntityParser.ParseResourceType(self.Type),
-        Name    = self.Name,
-        Actions = self.Actions.Select(AclEntityParser.ParseResourceAction)
-    };
+    public static AclAccessRule ToAclAccessRule(this StaticAclAccessRule self) =>
+    AclAccessRuleConverter.ConvertToAclAccessRule(self);
 
-    public static AclPolicy ToAclPolicy(this StaticAclPolicy self) => new AclPolicy {
-        Name   = self.Name,
-        Access = self.Access.Select(ToAclAccessRule)
-    };
+    public static StaticAclAccessRule ToStaticAclAccessRule(this AclAccessRule self) =>
+    AclAccessRuleConverter.ConvertToStaticAclAccessRule(self);
 
-    public static AclUser ToAclUser(this StaticAclUser self) => new AclUser {
-        Username = self.Username,
-        Acl      = self.Acl
-    };
+    public static AclPolicy ToAclPolicy(this StaticAclPolicy self) =>
+    AclPolicyConverter.ConvertToAclPolicy(self);
+
+    public static StaticAclPolicy ToStaticAclPolicy(this AclPolicy self) =>
+    AclPolicyConverter.ConvertToStaticAclPolicy(self);
+
+    public static AclUser ToAclUser(this StaticAclUser self) =>
+    AclUserConverter.ConvertToAclUser(self);
+
+    public static StaticAclUser ToStaticAclUser(this AclUser self) =>
+    AclUserConverter.ConvertToStaticAclUser(self);
 }
