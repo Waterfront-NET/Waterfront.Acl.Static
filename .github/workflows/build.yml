@@ -9,3 +9,14 @@ jobs:
       - uses: actions/setup-dotnet@v3
       - run: ./build.sh --target build --configuration Release
       - run: ./build.sh --target pack --configuration Release --no-build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: |
+            artifacts/pkg/*.nupkg
+            artifacts/pkg/*.snupkg
+      - uses: actions/upload-artifact@v3
+        with:
+          name: libraries
+          with: |
+            artifacts/lib/*.zip
