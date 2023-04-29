@@ -18,5 +18,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: libraries
-          with: |
-            artifacts/lib/*.zip
+          path: artifacts/lib/*.zip
