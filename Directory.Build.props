@@ -8,5 +8,6 @@
     <RepositoryUrl>https://github.com/Waterfront-NET/Waterfront.Acl.Static</RepositoryUrl>
     <Description>Static ACL providers for Waterfront</Description>
     <PackageTags>authentication;authorization;docker;registry;tokens;yaml</PackageTags>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>
