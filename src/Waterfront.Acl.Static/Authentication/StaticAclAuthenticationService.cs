@@ -13,7 +13,7 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
 {
     public StaticAclAuthenticationService(
         ILoggerFactory loggerFactory,
-        IOptions<StaticAclOptions> options
+        StaticAclOptions options
     ) : base(loggerFactory, options) { }
 
     public override ValueTask<AclAuthenticationResult> AuthenticateAsync(TokenRequest request)
@@ -54,7 +54,7 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
     {
         string matchTarget = request.ConnectionCredentials.ToString();
 
-        StaticAclUser? user = Options.Value.Users.FirstOrDefault(
+        StaticAclUser? user = Options.Users.FirstOrDefault(
             user => !string.IsNullOrEmpty(user.Ip) && user.Ip.ToGlob().IsMatch(matchTarget)
         );
 
@@ -73,7 +73,7 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
             return false;
         }
 
-        StaticAclUser? user = Options.Value.Users.FirstOrDefault(
+        StaticAclUser? user = Options.Users.FirstOrDefault(
             user => user.Username.Equals(request.BasicCredentials.Username)
         );
 
@@ -106,6 +106,6 @@ public class StaticAclAuthenticationService : AclAuthenticationServiceBase<Stati
     }
 
     AclAuthenticationResult TryAuthenticateWithFallbackPolicy() => new AclAuthenticationResult {
-        User = Options.Value.Users.FirstOrDefault(user => user.IsAnonymous())?.ToAclUser()
+        User = Options.Users.FirstOrDefault(user => user.IsAnonymous())?.ToAclUser()
     };
 }

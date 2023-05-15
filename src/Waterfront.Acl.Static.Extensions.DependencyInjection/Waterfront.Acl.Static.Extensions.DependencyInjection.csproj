@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Waterfront.Extensions.DependencyInjection" Version="1.0.0-alpha.13" />
+    <PackageReference Include="Waterfront.Extensions.DependencyInjection" Version="1.0.0-alpha.14" />
   </ItemGroup>
 
 </Project>

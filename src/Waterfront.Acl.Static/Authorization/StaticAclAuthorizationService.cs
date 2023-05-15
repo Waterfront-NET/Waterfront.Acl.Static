@@ -14,7 +14,7 @@ namespace Waterfront.Acl.Static.Authorization;
 
 public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticAclOptions>
 {
-    public StaticAclAuthorizationService(ILoggerFactory loggerFactory, IOptions<StaticAclOptions> options) : base(
+    public StaticAclAuthorizationService(ILoggerFactory loggerFactory, StaticAclOptions options) : base(
         loggerFactory,
         options
     ) {}
@@ -42,7 +42,7 @@ public class StaticAclAuthorizationService : AclAuthorizationServiceBase<StaticA
         List<TokenRequestScope> authorizedScopes = new List<TokenRequestScope>();
         List<TokenRequestScope> forbiddenScopes = new List<TokenRequestScope>();
 
-        StaticAclPolicy[] policies = Options.Value.Acl.Where(
+        StaticAclPolicy[] policies = Options.Acl.Where(
                                                 p => user.Acl.Contains(p.Name, StringComparer.OrdinalIgnoreCase)
                                             )
                                             .ToArray();
