@@ -1,13 +1,33 @@
 <Project>
-  <PropertyGroup>
-    <Company></Company>
-    <Authors>2CHEVSKII</Authors>
-    <Copyright>Copyright (c) 2023 2CHEVSKII, MIT License</Copyright>
+
+  <PropertyGroup Label="Package info">
+    <Company>Waterfront.NET</Company>
+    <Authors>Waterfront.NET project contributors</Authors>
+    <Copyright>Copyright (c) 2023 Waterfront.NET project contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Waterfront-NET/Waterfront.Acl.Static</RepositoryUrl>
-    <Description>Static ACL providers for Waterfront</Description>
-    <PackageTags>authentication;authorization;docker;registry;tokens;yaml</PackageTags>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Description>Open Source authorization server for Docker registry</Description>
+    <PackageTags>authentication;authorization;docker;registry;tokens</PackageTags>
   </PropertyGroup>
+
+  <PropertyGroup Label="Version">
+    <Version>$(GitVersion_SemVer)</Version>
+    <InformationalVersion>$(GitVersion_InformationalVersion)</InformationalVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Debug">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>
