@@ -4,17 +4,17 @@ namespace Waterfront.Acl.Static.Models;
 
 public class StaticAclAccessRule
 {
-  public string Type { get; set; }
-  public string Name { get; set; }
-  public List<string> Actions { get; set; }
+	public string Type { get; set; }
+	public string Name { get; set; }
+	public List<string> Actions { get; set; }
 
-  public StaticAclAccessRule()
-  {
-    Actions = new List<string>();
-  }
+	public StaticAclAccessRule()
+	{
+		Actions = new List<string>();
+	}
 
-  public override string ToString()
-  {
-    return $"StaticAclPolicyAccessRule({Type}:{Name}:{string.Join(",", Actions)})";
-  }
+	public override string ToString()
+	{
+		return $"StaticAclPolicyAccessRule({Type}:{Name}:{string.Join(",", Actions)})";
+	}
 }
